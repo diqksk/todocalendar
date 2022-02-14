@@ -1,5 +1,6 @@
 <template>
   <div id="login-main">
+    <!-- 로그인화면 -->
     <form id="login-form">
       <legend>로그인</legend>
       <ul class="login-input">
@@ -9,7 +10,7 @@
             id="user-id"
             autofocus
             placeholder="아이디"
-            v-model="userinfo.userid"
+            v-model="loginInfo.userId"
           />
         </li>
         <li>
@@ -17,7 +18,7 @@
             type="password"
             id="user-password"
             placeholder="비밀번호"
-            v-model="userinfo.userpassword"
+            v-model="loginInfo.userPassword"
           />
         </li>
         <li id="user-find">
@@ -25,22 +26,31 @@
           <p id="user-password-find">비밀번호 찾기</p>
         </li>
       </ul>
-      <button @click="checkInfo">로그인</button>
-      <button>회원가입</button>
+      <button class="btn" @click="checkInfo">로그인</button>
+      <button class="btn" @click="signupForm">회원가입</button>
     </form>
+
+    <!-- 회원가입 모달박스 -->
+    <SignupModal v-show="displayModal" :signupForm="signupForm" />
   </div>
 </template>
 
 <script>
+import SignupModal from "./SignupModal";
 export default {
   name: "LoginLayout",
+  components: {
+    SignupModal,
+  },
   data() {
     return {
       userlist: [],
-      userinfo: {
-        userid: "",
-        userpassword: "",
+      loginInfo: {
+        userId: "",
+        userPassword: "",
       },
+      userData: [],
+      displayModal: false,
     };
   },
   methods: {
@@ -48,9 +58,17 @@ export default {
       e.preventDefault();
       const id = document.querySelector("#user-id");
       const password = document.querySelector("#user-password");
-      id.value = this.userinfo.userid;
-      password.value = this.userinfo.userpassword;
-      console.log(this.userinfo);
+      if (id.value.length > 0 && password.value.length > 0) {
+        id.value = this.loginInfo.userId;
+        password.value = this.loginInfo.userPassword;
+        console.log(this.loginInfo);
+      } else {
+        alert("아이디 또는 비밀번호를 확인해주세요!!");
+      }
+    },
+    signupForm(e) {
+      e.preventDefault();
+      this.displayModal = !this.displayModal;
     },
   },
 };
@@ -66,14 +84,14 @@ export default {
   align-items: center;
 }
 
-form {
+#login-form {
   width: 30%;
   height: 60%;
   padding: 2% 5%;
-  letter-spacing: 0.05rem;
-  text-indent: 0.05rem;
+  letter-spacing: 0.1rem;
+  text-indent: 0.1rem;
 }
-legend {
+#login-form legend {
   width: 100%;
   height: 2em;
   line-height: 2em;
@@ -110,6 +128,8 @@ legend {
   margin: 5% 0 10% 0;
   font-size: 0.5em;
   justify-content: flex-end;
+  text-indent: 0;
+  letter-spacing: 0;
 }
 #user-id-find {
   margin-right: 5%;
@@ -119,7 +139,7 @@ legend {
   cursor: pointer;
 }
 
-button {
+.btn {
   display: block;
   padding: 3%;
   width: 100%;
@@ -134,7 +154,7 @@ button {
   -webkit-transition: all 0.4s ease;
   -moz-transition: all 0.4s ease;
 }
-button:hover {
+.btn:hover {
   background: #93f9b9;
   color: #131313;
 }
