@@ -31,7 +31,12 @@
     </form>
 
     <!-- 회원가입 모달박스 -->
-    <SignupModal v-show="displayModal" :signupForm="signupForm" />
+    <SignupModal
+      v-show="displayModal"
+      @closeModal="closeModal"
+      @justClose="justClose"
+      :userList="userList"
+    />
   </div>
 </template>
 
@@ -44,7 +49,7 @@ export default {
   },
   data() {
     return {
-      userlist: [],
+      userList: [],
       loginInfo: {
         userId: "",
         userPassword: "",
@@ -56,11 +61,8 @@ export default {
   methods: {
     checkInfo(e) {
       e.preventDefault();
-      const id = document.querySelector("#user-id");
-      const password = document.querySelector("#user-password");
-      if (id.value.length > 0 && password.value.length > 0) {
-        id.value = this.loginInfo.userId;
-        password.value = this.loginInfo.userPassword;
+      const { userId, userPassword } = this.loginInfo;
+      if (userId.length > 0 && userPassword.length > 0) {
         console.log(this.loginInfo);
       } else {
         alert("아이디 또는 비밀번호를 확인해주세요!!");
@@ -68,6 +70,14 @@ export default {
     },
     signupForm(e) {
       e.preventDefault();
+      this.displayModal = !this.displayModal;
+    },
+    closeModal(signupInfo) {
+      this.displayModal = !this.displayModal;
+      this.userList.push(signupInfo);
+      console.log(this.userList);
+    },
+    justClose() {
       this.displayModal = !this.displayModal;
     },
   },

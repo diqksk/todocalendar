@@ -1,16 +1,12 @@
 <template>
   <div>
-    <LoginLayout />
+    <router-view />
   </div>
 </template>
 
 <script>
-import LoginLayout from "./components/layout/LoginLayout";
 export default {
   name: "App",
-  components: {
-    LoginLayout,
-  },
 };
 </script>
 
