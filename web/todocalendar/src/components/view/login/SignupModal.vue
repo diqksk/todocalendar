@@ -50,7 +50,7 @@
         </ul>
       </form>
       <button class="btn" id="signup-complete-btn" @click="checkSignup">
-        확인
+        완료
       </button>
       <button class="btn" id="signup-cancle-btn" @click="justClose">
         닫기
@@ -63,20 +63,6 @@
 import userDataMixin from "@/mixins/userDataMixin";
 export default {
   name: "Signup Modal",
-  // props: {
-  //   userList: {
-  //     type: Object,
-  //     default: () => {
-  //       return {
-  //         userId: "",
-  //         password: "",
-  //         passwordConfirm: "",
-  //         name: "",
-  //         phone: "",
-  //       };
-  //     },
-  //   },
-  // },
   mixins: [userDataMixin],
   data() {
     return {
@@ -144,26 +130,14 @@ export default {
     async checkId(e) {
       // 아이디 중복체크
       e.preventDefault();
-      const alreadyCheck = await this.fetchData(
-        "post",
-        `/user/check/${this.signupInfo.userId}`,
-        this.signupInfo.userId
-      );
-      if (alreadyCheck) {
-        return;
+      const userId = this.signupInfo.userId;
+      const alreadyCheck = await this.fetchData("get", `/user/check/${userId}`);
+      if (alreadyCheck.msg) {
+        alert(alreadyCheck.msg);
+        this.checkAlreadyId = !this.checkAlreadyId;
+      } else {
+        alert(alreadyCheck.err);
       }
-
-      // const newId = this.signupInfo.userId;
-      // const userIdlist = this.userList.map((ele) => ele.userId);
-
-      // if (userIdlist.includes(newId)) {
-      //   // 기존 유저리스트에 새로 입력한 유저아이디와 일치하는 요소가 존재하는 경우
-      //   alert("이미 존재하는 아이디입니다.");
-      //   this.signupInfo.userId = "";
-      // } else {
-      //   alert("사용할 수 있는 아이디입니다.");
-      //   this.checkAlreadyId = !this.checkAlreadyId;
-      // }
     },
   },
 };
