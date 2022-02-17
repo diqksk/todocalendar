@@ -110,8 +110,6 @@ export default {
             // 회원가입 완료!! (아이디 중복체크 완료)
             alert("회원가입이 완료되었습니다.");
 
-            console.log(this.signupInfo);
-
             this.$emit("closeModal", { ...this.signupInfo });
 
             this.signupInfo.userId = "";
