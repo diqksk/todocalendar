@@ -4,7 +4,7 @@ const routes = [
   {
     path: "/",
     name: "LoginLayout",
-    component: () => import("@/components/layout/LoginLayout.vue"),
+    component: () => import("@/components/view/login/LoginLayout.vue"),
   },
 ];
 

@@ -42,11 +42,14 @@
 
 <script>
 import SignupModal from "./SignupModal";
+import userDataMixin from "@/mixins/userDataMixin";
+
 export default {
   name: "LoginLayout",
   components: {
     SignupModal,
   },
+  mixins: [userDataMixin],
   data() {
     return {
       userList: [],
@@ -73,6 +76,8 @@ export default {
       this.displayModal = !this.displayModal;
     },
     closeModal(signupInfo) {
+      this.fetchData("post", "/signup", signupInfo); // 회원가입된 유저 데이터 서버로 전송
+
       this.displayModal = !this.displayModal;
       this.userList.push(signupInfo);
       console.log(this.userList);
