@@ -94,6 +94,22 @@ export class UserService {
     return { ...findResult, password: '', accessToken };
   }
 
+  async checkValidId(userId: string) {
+    const options: FindOneOptions<User> = {
+      where: { userId },
+    };
+    const findResult = await this.userQueryRepository.findUser(options);
+
+    if (findResult) {
+      throw new ResponseError(
+        ErrorStatus.ALREADY_EXIST,
+        '이미 존재하는 아이디 입니다.',
+      );
+    }
+
+    return { msg: '가능한 아이디입니다.' };
+  }
+
   findAll() {
     return `This action returns all user`;
   }
