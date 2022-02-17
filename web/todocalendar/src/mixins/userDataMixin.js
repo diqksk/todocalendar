@@ -7,8 +7,12 @@ const instance = axios.create({
 const userDataMixin = {
   methods: {
     async fetchData(method, url, params) {
-      const res = await instance[method](url, params);
-      return console.log(res);
+      const { data } = await instance[method](url, params);
+      if (data.err) {
+        alert(data.err);
+        return;
+      }
+      return data.data;
     },
   },
 };

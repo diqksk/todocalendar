@@ -57,8 +57,8 @@ export default {
         userId: "",
         userPassword: "",
       },
-      userData: [],
       displayModal: false,
+      userData: {},
     };
   },
   methods: {
@@ -75,12 +75,14 @@ export default {
       e.preventDefault();
       this.displayModal = !this.displayModal;
     },
-    closeModal(signupInfo) {
-      this.fetchData("post", "/signup", signupInfo); // 회원가입된 유저 데이터 서버로 전송
-
-      this.displayModal = !this.displayModal;
-      this.userList.push(signupInfo);
-      console.log(this.userList);
+    async closeModal(signupInfo) {
+      const userData = await this.fetchData("post", "user/signup", signupInfo); // 회원가입된 유저 데이터 서버로 전송
+      if (userData) {
+        this.displayModal = !this.displayModal;
+        this.userList.push(signupInfo);
+        console.log(this.userList);
+        alert("회원가입이 완료되었습니다.");
+      }
     },
     justClose() {
       this.displayModal = !this.displayModal;
