@@ -24,12 +24,15 @@ export class UserController {
   @Post('signup')
   async create(@Body() createUserDto: CreateUserDto): Promise<Success> {
     const data = await this.userService.create(createUserDto);
+
     return new Success(SuccessStatus.SUCCESS, data);
   }
 
   @Post('login')
-  async login(@Body() loginUserDto: LoginUserDto) {
-    return null;
+  async login(@Body() loginUserDto: LoginUserDto): Promise<Success> {
+    const data = await this.userService.login(loginUserDto);
+
+    return new Success(SuccessStatus.SUCCESS, data);
   }
 
   @Get()

@@ -13,8 +13,9 @@ export class ExceptionInterCeptor implements NestInterceptor {
   ): Observable<any> | Promise<Observable<any>> {
     console.log('error is occured ');
     return next.handle().pipe(
-      catchError(({ code, msg }) => {
-        return of(new Fail(code, msg));
+      catchError((err) => {
+        if (err.status) return of(new Fail(err.status, err.response.message));
+        return of(new Fail(err.code, err.msg));
       }),
     );
   }
