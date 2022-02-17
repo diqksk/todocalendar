@@ -8,7 +8,7 @@ const SECRET_KEY = process.env.SECRET_KEY;
 
 export const generateJwt = (userId: string, options?: SignOptions) => {
   try {
-    const accessToken = sign({ userId }, '1234', options);
+    const accessToken = sign({ userId }, SECRET_KEY, options);
     return accessToken;
   } catch (e) {
     throw new ResponseError(ErrorStatus.BAD_REQUEST, e);
