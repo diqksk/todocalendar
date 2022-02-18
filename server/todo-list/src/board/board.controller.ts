@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
+import { Success } from 'src/commons/utils/response/custom.response';
+import { SuccessStatus } from 'src/commons/utils/types/status.enum';
 import { BoardService } from './board.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
@@ -16,8 +18,10 @@ export class BoardController {
   constructor(private readonly boardService: BoardService) {}
 
   @Post()
-  create(@Body() createBoardDto: CreateBoardDto) {
-    return this.boardService.create(createBoardDto);
+  async create(@Body() createBoardDto: CreateBoardDto) {
+    const result = await this.boardService.create(createBoardDto);
+
+    return new Success(SuccessStatus.SUCCESS, result);
   }
 
   @Get()
