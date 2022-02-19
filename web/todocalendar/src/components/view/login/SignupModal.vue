@@ -55,15 +55,24 @@
       <button class="btn" id="signup-cancle-btn" @click="justClose">
         닫기
       </button>
+      <AlertBox
+        v-if="displayAlert"
+        :alertText="alertText"
+        @closeAlert="closeAlert"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import userDataMixin from "@/mixins/userDataMixin";
+import AlertBox from "../../AlertBox";
 export default {
   name: "Signup Modal",
   mixins: [userDataMixin],
+  components: {
+    AlertBox,
+  },
   data() {
     return {
       signupInfo: {
@@ -74,6 +83,8 @@ export default {
         phone: "",
       },
       checkAlreadyId: true,
+      displayAlert: false,
+      alertText: "",
     };
   },
   methods: {
@@ -92,7 +103,8 @@ export default {
       ) {
         if (passwordConfirm !== password) {
           // 유저 비밀번호와 재확인 비밀번호가 다를 경우
-          alert("비밀번호를 확인해주세요.");
+          this.displayAlert = !this.displayAlert;
+          this.alertText = "비밀번호를 확인해주세요.";
         } else {
           if (this.checkAlreadyId === false) {
             // 회원가입 완료!! (아이디 중복체크 완료)
@@ -131,13 +143,15 @@ export default {
       // 아이디 중복체크
       e.preventDefault();
       const userId = this.signupInfo.userId;
-      const alreadyCheck = await this.fetchData("get", `/user/check/${userId}`);
-      if (alreadyCheck.msg) {
-        alert(alreadyCheck.msg);
+      const check = await this.fetchData("get", `/user/check/${userId}`);
+      if (check) {
+        alert(check.msg);
         this.checkAlreadyId = !this.checkAlreadyId;
-      } else {
-        alert(alreadyCheck.err);
       }
+    },
+    closeAlert(display) {
+      // 알림창 닫기버튼 클릭 시 닫기 기능
+      if (display !== this.displayAlert) this.displayAlert = !this.displayAlert;
     },
   },
 };

@@ -18,7 +18,7 @@
             type="password"
             id="user-password"
             placeholder="비밀번호"
-            v-model="loginInfo.userPassword"
+            v-model="loginInfo.password"
           />
         </li>
         <li id="user-find">
@@ -55,18 +55,22 @@ export default {
       userList: [],
       loginInfo: {
         userId: "",
-        userPassword: "",
+        password: "",
       },
       displayModal: false,
       userData: {},
     };
   },
   methods: {
-    checkInfo(e) {
+    async checkInfo(e) {
       e.preventDefault();
-      const { userId, userPassword } = this.loginInfo;
-      if (userId.length > 0 && userPassword.length > 0) {
-        console.log(this.loginInfo);
+      const { userId, password } = this.loginInfo;
+      if (userId.length > 0 && password.length > 0) {
+        const userCheck = await this.fetchData("post", "/auth/login", {
+          userId,
+          password,
+        });
+        console.log(userCheck);
       } else {
         alert("아이디 또는 비밀번호를 확인해주세요!!");
       }
@@ -76,11 +80,10 @@ export default {
       this.displayModal = !this.displayModal;
     },
     async closeModal(signupInfo) {
-      const userData = await this.fetchData("post", "user/signup", signupInfo); // 회원가입된 유저 데이터 서버로 전송
+      const userData = await this.fetchData("post", "/user/signup", signupInfo); // 회원가입된 유저 데이터 서버로 전송
       if (userData) {
         this.displayModal = !this.displayModal;
         this.userList.push(signupInfo);
-        console.log(this.userList);
         alert("회원가입이 완료되었습니다.");
       }
     },
