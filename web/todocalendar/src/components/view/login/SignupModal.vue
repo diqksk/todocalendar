@@ -55,6 +55,7 @@
       <button class="btn" id="signup-cancle-btn" @click="justClose">
         닫기
       </button>
+      <!-- 알림 모달창 -->
       <AlertBox
         v-if="displayAlert"
         :alertText="alertText"
@@ -120,13 +121,15 @@ export default {
             this.checkAlreadyId = true;
           } else {
             // 아이디 중복체크 미완료시 알림 메세지
-            alert("아이디 중복체크를 해주세요.");
+            this.displayAlert = !this.displayAlert;
+            this.alertText = "아이디 중복체크를 해주세요.";
           }
         }
       } else {
         console.log(userId, password, passwordConfirm, name, phone);
         // 양식에 빈칸이 존재할 경우 (양식 작성 미완료)
-        alert("회원정보를 확인해주세요.");
+        this.displayAlert = !this.displayAlert;
+        this.alertText = "회원정보를 확인해주세요.";
       }
     },
     justClose(e) {
@@ -144,10 +147,13 @@ export default {
       e.preventDefault();
       const userId = this.signupInfo.userId;
       const check = await this.fetchData("get", `/user/check/${userId}`);
-      if (check) {
-        alert(check.msg);
-        this.checkAlreadyId = !this.checkAlreadyId;
+      if (check.data) {
+        this.alertText = check.data.msg;
+      } else {
+        this.alertText = check.err;
       }
+      this.displayAlert = !this.displayAlert;
+      this.checkAlreadyId = !this.checkAlreadyId;
     },
     closeAlert(display) {
       // 알림창 닫기버튼 클릭 시 닫기 기능

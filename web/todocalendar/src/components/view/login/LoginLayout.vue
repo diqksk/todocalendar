@@ -35,19 +35,26 @@
       v-show="displayModal"
       @closeModal="closeModal"
       @justClose="justClose"
-      :userList="userList"
+    />
+    <!-- 알림 모달창 -->
+    <AlertBox
+      v-if="displayAlert"
+      :alertText="alertText"
+      @closeAlert="closeAlert"
     />
   </div>
 </template>
 
 <script>
 import SignupModal from "./SignupModal";
+import AlertBox from "../../AlertBox";
 import userDataMixin from "@/mixins/userDataMixin";
 
 export default {
   name: "LoginLayout",
   components: {
     SignupModal,
+    AlertBox,
   },
   mixins: [userDataMixin],
   data() {
@@ -58,21 +65,36 @@ export default {
         password: "",
       },
       displayModal: false,
+      displayAlert: false,
+      alertText: "",
+      // moveCalandar
       userData: {},
     };
   },
   methods: {
     async checkInfo(e) {
+      // 로그인 시도
       e.preventDefault();
       const { userId, password } = this.loginInfo;
       if (userId.length > 0 && password.length > 0) {
-        const userCheck = await this.fetchData("post", "/auth/login", {
-          userId,
-          password,
-        });
-        console.log(userCheck);
+        const userCheck = await this.fetchData(
+          "post",
+          "/user/login",
+          this.loginInfo
+        );
+        if (userCheck) {
+          if (userCheck.data) {
+            // 회원일 경우
+            this.userData = userCheck.data;
+          } else {
+            // 회원이 아닐 경우
+            this.displayAlert = !this.displayAlert;
+            this.alertText = userCheck.err;
+          }
+        }
       } else {
-        alert("아이디 또는 비밀번호를 확인해주세요!!");
+        this.displayAlert = !this.displayAlert;
+        this.alertText = "아이디 또는 비밀번호를 확인해주세요!!";
       }
     },
     signupForm(e) {
@@ -83,12 +105,17 @@ export default {
       const userData = await this.fetchData("post", "/user/signup", signupInfo); // 회원가입된 유저 데이터 서버로 전송
       if (userData) {
         this.displayModal = !this.displayModal;
-        this.userList.push(signupInfo);
-        alert("회원가입이 완료되었습니다.");
+        this.displayAlert = !this.displayAlert;
+        console.log(userData);
+        this.alertText = "회원가입이 완료되었습니다.";
       }
     },
     justClose() {
       this.displayModal = !this.displayModal;
+    },
+    closeAlert(display) {
+      // 알림창 닫기버튼 클릭 시 닫기 기능
+      if (display !== this.displayAlert) this.displayAlert = !this.displayAlert;
     },
   },
 };

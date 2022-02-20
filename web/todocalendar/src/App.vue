@@ -1,7 +1,9 @@
 <template>
   <div>
-    <router-view />
+    <router-link to="/"></router-link>
+    <!-- <router-link to="/calendar"></router-link> -->
   </div>
+  <router-view />
 </template>
 
 <script>
