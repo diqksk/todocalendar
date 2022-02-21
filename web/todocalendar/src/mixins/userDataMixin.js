@@ -8,11 +8,6 @@ const userDataMixin = {
   methods: {
     async fetchData(method, url, params) {
       const { data } = await instance[method](url, params);
-      // if (data.err) {
-      //   return data.err;
-      // } else {
-      //   return data.data;
-      // }
       return data;
     },
   },
