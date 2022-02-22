@@ -19,7 +19,7 @@
               type="password"
               id="signup-password"
               placeholder="비밀번호"
-              v-model="signupInfo.userPassword"
+              v-model="signupInfo.password"
             />
           </li>
           <li>
@@ -27,7 +27,7 @@
               type="password"
               id="signup-password-confirm"
               placeholder="비밀번호 재입력"
-              v-model="signupInfo.userPasswordConfirm"
+              v-model="signupInfo.passwordConfirm"
             />
           </li>
           <li>
@@ -36,7 +36,7 @@
               id="signup-name"
               autofocus
               placeholder="이름"
-              v-model="signupInfo.userName"
+              v-model="signupInfo.name"
             />
           </li>
           <li>
@@ -44,91 +44,92 @@
               type="text"
               id="signup-phone"
               placeholder="전화번호    ex) 01012345678"
-              v-model="signupInfo.userPhone"
+              v-model="signupInfo.phone"
             />
           </li>
         </ul>
       </form>
       <button class="btn" id="signup-complete-btn" @click="checkSignup">
-        확인
+        완료
       </button>
       <button class="btn" id="signup-cancle-btn" @click="justClose">
         닫기
       </button>
+      <!-- 알림 모달창 -->
+      <AlertBox
+        v-if="displayAlert"
+        :alertText="alertText"
+        @closeAlert="closeAlert"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import userDataMixin from "@/mixins/userDataMixin";
+import AlertBox from "../../AlertBox";
 export default {
   name: "Signup Modal",
-  props: {
-    userList: {
-      type: Object,
-      default: () => {
-        return {
-          userId: "",
-          userPassword: "",
-          userPasswordConfirm: "",
-          userName: "",
-          userPhone: "",
-        };
-      },
-    },
+  mixins: [userDataMixin],
+  components: {
+    AlertBox,
   },
   data() {
     return {
       signupInfo: {
         userId: "",
-        userPassword: "",
-        userPasswordConfirm: "",
-        userName: "",
-        userPhone: "",
+        password: "",
+        passwordConfirm: "",
+        name: "",
+        phone: "",
       },
       checkAlreadyId: true,
+      displayAlert: false,
+      alertText: "",
     };
   },
   methods: {
     checkSignup(e) {
       // 회원가입 완료 버튼 클릭 메서드
       e.preventDefault();
-      const { userId, userPassword, userPasswordConfirm, userName, userPhone } =
+      const { userId, password, passwordConfirm, name, phone } =
         this.signupInfo;
 
       if (
         // 양식이 다 채워졌을 경우
         userId.length > 0 &&
-        userPassword.length > 0 &&
-        userName.length > 0 &&
-        userPhone.length > 0
+        password.length > 0 &&
+        name.length > 0 &&
+        phone.length > 0
       ) {
-        if (userPasswordConfirm !== userPassword) {
+        if (passwordConfirm !== password) {
           // 유저 비밀번호와 재확인 비밀번호가 다를 경우
-          alert("비밀번호를 확인해주세요.");
+          this.displayAlert = !this.displayAlert;
+          this.alertText = "비밀번호를 확인해주세요.";
         } else {
           if (this.checkAlreadyId === false) {
             // 회원가입 완료!! (아이디 중복체크 완료)
-            alert("회원가입이 완료되었습니다.");
 
-            console.log(this.signupInfo);
-
-            this.$emit("closeModal", { ...this.signupInfo });
+            this.$emit("closeModal", { userId, password, name, phone });
 
             this.signupInfo.userId = "";
-            this.signupInfo.userPassword = "";
-            this.signupInfo.userPasswordConfirm = "";
-            this.signupInfo.userName = "";
-            this.signupInfo.userPhone = "";
+            this.signupInfo.password = "";
+            this.signupInfo.passwordConfirm = "";
+            this.signupInfo.name = "";
+            this.signupInfo.phone = "";
 
             this.checkAlreadyId = true;
           } else {
             // 아이디 중복체크 미완료시 알림 메세지
-            alert("아이디 중복체크를 해주세요.");
+            this.displayAlert = !this.displayAlert;
+            this.alertText = "아이디 중복체크를 해주세요.";
           }
         }
       } else {
+        console.log(userId, password, passwordConfirm, name, phone);
         // 양식에 빈칸이 존재할 경우 (양식 작성 미완료)
-        alert("회원정보를 확인해주세요.");
+        this.displayAlert = !this.displayAlert;
+        this.alertText = "회원정보를 확인해주세요.";
       }
     },
     justClose(e) {
@@ -136,25 +137,27 @@ export default {
       e.preventDefault();
       this.$emit("justClose");
       this.signupInfo.userId = "";
-      this.signupInfo.userPassword = "";
-      this.signupInfo.userPasswordConfirm = "";
-      this.signupInfo.userName = "";
-      this.signupInfo.userPhone = "";
+      this.signupInfo.password = "";
+      this.signupInfo.passwordConfirm = "";
+      this.signupInfo.name = "";
+      this.signupInfo.phone = "";
     },
-    checkId(e) {
+    async checkId(e) {
       // 아이디 중복체크
       e.preventDefault();
-      const newId = this.signupInfo.userId;
-      const userIdlist = this.userList.map((ele) => ele.userId);
-
-      if (userIdlist.includes(newId)) {
-        // 기존 유저리스트에 새로 입력한 유저아이디와 일치하는 요소가 존재하는 경우
-        alert("이미 존재하는 아이디입니다.");
-        this.signupInfo.userId = "";
+      const userId = this.signupInfo.userId;
+      const check = await this.fetchData("get", `/user/check/${userId}`);
+      if (check.data) {
+        this.alertText = check.data.msg;
       } else {
-        alert("사용할 수 있는 아이디입니다.");
-        this.checkAlreadyId = !this.checkAlreadyId;
+        this.alertText = check.err;
       }
+      this.displayAlert = !this.displayAlert;
+      this.checkAlreadyId = !this.checkAlreadyId;
+    },
+    closeAlert(display) {
+      // 알림창 닫기버튼 클릭 시 닫기 기능
+      if (display !== this.displayAlert) this.displayAlert = !this.displayAlert;
     },
   },
 };
