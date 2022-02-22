@@ -59,7 +59,6 @@ export default {
   mixins: [userDataMixin],
   data() {
     return {
-      userList: [],
       loginInfo: {
         userId: "",
         password: "",
@@ -67,7 +66,6 @@ export default {
       displayModal: false,
       displayAlert: false,
       alertText: "",
-      // moveCalandar
       userData: {},
     };
   },
@@ -86,6 +84,8 @@ export default {
           if (userCheck.data) {
             // 회원일 경우
             this.userData = userCheck.data;
+            console.log(this.userData);
+            this.$router.replace({ path: "/calendar" });
           } else {
             // 회원이 아닐 경우
             this.displayAlert = !this.displayAlert;
