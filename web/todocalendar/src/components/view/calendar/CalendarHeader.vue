@@ -1,0 +1,24 @@
+<template>
+  <header>
+    <h3>{{ month }}</h3>
+  </header>
+</template>
+
+<script>
+export default {
+  name: "CalendarHeader",
+  data() {
+    return {
+      month: "2월",
+    };
+  },
+};
+</script>
+
+<style scoped>
+header {
+  width: 100%;
+  text-align: center;
+  margin: 5% auto;
+}
+</style>

@@ -6,7 +6,7 @@ const Login = () =>
   );
 const Calendar = () =>
   import(
-    /* webpackChunkName: "calendar" */ "./components/view/todo/CalendarLayout.vue"
+    /* webpackChunkName: "calendar" */ "./components/view/calendar/CalendarLayout.vue"
   );
 const routes = [
   {

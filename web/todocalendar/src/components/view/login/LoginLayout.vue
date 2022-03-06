@@ -2,7 +2,7 @@
   <div id="login-main">
     <!-- 로그인화면 -->
     <form id="login-form">
-      <legend>로그인</legend>
+      <legend>Todo Calendar</legend>
       <ul class="login-input">
         <li>
           <input
@@ -140,7 +140,6 @@ export default {
 }
 #login-form legend {
   width: 100%;
-  height: 2em;
   line-height: 2em;
   font-size: 1.2em;
   font-weight: bold;
