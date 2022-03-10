@@ -1,22 +1,27 @@
 <template>
   <div class="modal-wrapper">
     <div class="modal">
-      <div class="todo-box">
-        <!-- 투두 컴포넌트 만들어서 v-show 활용하여 해당 날짜에 맞는 투두리스트 보여주기 -->
-        <input type="text" id="todo-input" />
-        <button id="todo-btn">등록</button>
+      <TodoHeader />
+      <TodoContent />
+      <div class="btn-box">
+        <button class="btn" id="signup-cancle-btn" @click="closeItem">
+          닫기
+        </button>
       </div>
-
-      <button class="btn" id="signup-cancle-btn" @click="closeItem">
-        닫기
-      </button>
     </div>
   </div>
 </template>
 
 <script>
+import TodoHeader from "./todo/TodoHeader";
+import TodoContent from "./todo/TodoContent";
+
 export default {
   name: "ItemModal",
+  components: {
+    TodoHeader,
+    TodoContent,
+  },
   props: {},
   methods: {
     closeItem(e) {
@@ -46,17 +51,15 @@ export default {
   background: #fff;
   border-radius: 0.5rem;
 }
-.todo-box {
-  width: 80%;
-  height: 70%;
-  margin: 10% auto;
-  text-align: center;
-  border: 1px solid lightgray;
+.btn-box {
+  height: 5%;
+  min-height: 1em;
 }
 .btn {
   display: block;
-  padding: 1% 3%;
-  margin: 3% auto;
+  width: 15%;
+  height: 100%;
+  margin: 0 auto;
   border: none;
   border-radius: 0.2rem;
   cursor: pointer;
