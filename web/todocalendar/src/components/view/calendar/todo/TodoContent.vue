@@ -1,7 +1,7 @@
 <template>
   <div class="todo-box">
-    <TodoInput />
-    <TodoContainer />
+    <TodoInput @sendItem="sendItem" />
+    <TodoContainer :todoItems="todoItems" />
   </div>
 </template>
 
@@ -13,6 +13,17 @@ export default {
   components: {
     TodoInput,
     TodoContainer,
+  },
+  data() {
+    return {
+      todoItems: [],
+    };
+  },
+  methods: {
+    sendItem(input) {
+      this.todoItems.unshift(input);
+      console.log(this.todoItems);
+    },
   },
 };
 </script>

@@ -1,13 +1,36 @@
 <template>
   <div id="input-box">
-    <input type="text" id="todo-input" />
-    <button>등록</button>
+    <input
+      type="text"
+      id="todo-input"
+      @input="writeItem"
+      v-model="this.input"
+    />
+    <button @click="addItem">등록</button>
   </div>
 </template>
 
 <script>
 export default {
   name: "TodoInput",
+  data() {
+    return {
+      input: null,
+    };
+  },
+  methods: {
+    writeItem(e) {
+      const input = e.target.value;
+      if (input.trim() !== "") {
+        this.input = input;
+      }
+    },
+    addItem(e) {
+      e.preventDefault();
+      this.$emit("sendItem", this.input);
+      this.input = null;
+    },
+  },
 };
 </script>
 
