@@ -9,7 +9,7 @@ export default {
   name: "CalendarHeader",
   data() {
     return {
-      month: "2월",
+      month: "3월",
     };
   },
 };

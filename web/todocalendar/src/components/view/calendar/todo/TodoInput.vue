@@ -5,6 +5,7 @@
       id="todo-input"
       @input="writeItem"
       v-model="this.input"
+      autofocus
     />
     <button @click="addItem">등록</button>
   </div>
@@ -27,8 +28,10 @@ export default {
     },
     addItem(e) {
       e.preventDefault();
-      this.$emit("sendItem", this.input);
-      this.input = null;
+      if (this.input.trim() !== "") {
+        this.$emit("sendItem", this.input);
+        this.input = null;
+      }
     },
   },
 };
@@ -38,6 +41,7 @@ export default {
 #input-box {
   width: 100%;
   display: flex;
+  margin-bottom: 10%;
 }
 #todo-input {
   width: 90%;
