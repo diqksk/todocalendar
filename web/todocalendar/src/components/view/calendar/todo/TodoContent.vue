@@ -1,7 +1,7 @@
 <template>
   <div class="todo-box">
     <TodoInput @sendItem="sendItem" />
-    <TodoContainer :todoItems="todoItems" />
+    <TodoContainer :todoItems="todoItems" @deleteItem="deleteItem" />
   </div>
 </template>
 
@@ -22,6 +22,10 @@ export default {
   methods: {
     sendItem(input) {
       this.todoItems.unshift(input);
+      console.log(this.todoItems);
+    },
+    deleteItem(index) {
+      this.todoItems.splice(index, 1);
       console.log(this.todoItems);
     },
   },

@@ -11,9 +11,20 @@
           >
           <span class="todo-item">{{ item }}</span>
           <span class="icon-right">
-            <i class="material-icons done" style="color: #00c853">done</i>
+            <i
+              class="material-icons done"
+              style="color: #00c853"
+              @click="doneTodo"
+              >done</i
+            >
             <span class="slash"> / </span>
-            <i class="material-icons close" style="color: #d50000">close</i>
+            <i
+              class="material-icons close"
+              style="color: #d50000"
+              @click="deleteTodo"
+              :index="todoIndex"
+              >close</i
+            >
           </span>
         </li>
       </template>
@@ -33,11 +44,23 @@ export default {
   methods: {
     checkLike(e) {
       const target = e.target;
-      if (target.innerText === "favorite_border") {
-        target.innerText = "favorite";
-      } else {
-        target.innerText = "favorite_border";
-      }
+      const text =
+        target.innerText === "favorite_border" ? "favorite" : "favorite_border";
+      target.innerText = text;
+    },
+    doneTodo(e) {
+      e.preventDefault();
+      const rightIcon = e.path[1];
+      const todoPath = e.path[2];
+      rightIcon.childNodes[0].style.display = "none";
+      rightIcon.childNodes[1].style.display = "none";
+      todoPath.childNodes[1].style.textDecoration = "line-through";
+      todoPath.childNodes[1].style.color = "lightGray";
+    },
+    deleteTodo(e) {
+      e.preventDefault();
+      const index = e.target.getAttribute("index");
+      this.$emit("deleteItem", index);
     },
   },
 };

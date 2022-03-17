@@ -4,8 +4,9 @@
       type="text"
       id="todo-input"
       @input="writeItem"
-      v-model="this.input"
-      autofocus
+      @keypress="addItemKeyPress"
+      v-model="input"
+      ref="input"
     />
     <button @click="addItem">등록</button>
   </div>
@@ -16,8 +17,11 @@ export default {
   name: "TodoInput",
   data() {
     return {
-      input: null,
+      input: "",
     };
+  },
+  mounted() {
+    this.$refs.input.focus();
   },
   methods: {
     writeItem(e) {
@@ -30,7 +34,21 @@ export default {
       e.preventDefault();
       if (this.input.trim() !== "") {
         this.$emit("sendItem", this.input);
-        this.input = null;
+        this.input = "";
+      } else {
+        this.input = this.input.trim();
+      }
+      this.$refs.input.focus();
+    },
+    addItemKeyPress(e) {
+      if (e.keyCode === 13) {
+        if (this.input.trim() !== "") {
+          this.$emit("sendItem", this.input);
+          this.input = "";
+        } else {
+          this.input = this.input.trim();
+        }
+        this.$refs.input.focus();
       }
     },
   },
