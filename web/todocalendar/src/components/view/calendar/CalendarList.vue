@@ -1,31 +1,34 @@
 <template>
   <article>
-    <ul class="calendar-list">
-      <CalendarItem
-        v-for="calendar in calendarList"
-        :key="calendar.code"
-        :calendar="calendar"
-        @click="displayItemModal"
-      />
+    <ul class="days">
+      <li class="day">일</li>
+      <li class="day">월</li>
+      <li class="day">화</li>
+      <li class="day">수</li>
+      <li class="day">목</li>
+      <li class="day">금</li>
+      <li class="day">토</li>
+    </ul>
+    <ul class="dates">
+      <li v-for="(date, idx) in dates" :key="idx"></li>
     </ul>
     <ItemModal v-if="this.displayItem" @closeItem="closeItem" />
   </article>
 </template>
 
 <script>
-import CalendarItem from "./CalendarItem";
 import ItemModal from "./ItemModal";
 
 export default {
   name: "CalendarList",
-  components: { CalendarItem, ItemModal },
+  components: { ItemModal },
   props: {
-    calendarList: Array,
+    dates: Array,
   },
   data() {
     return {
-      calendar: {},
       displayItem: false,
+      date: null,
     };
   },
   methods: {
@@ -41,13 +44,21 @@ export default {
 </script>
 
 <style scoped>
-.calendar-list {
-  width: 100%;
-  margin: 2% auto;
-  padding: 2% 20%;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(5, auto);
-  grid-gap: 1em;
+.days {
+  display: flex;
+  border: 1px solid gray;
+}
+.day {
+  width: calc(100% / 7);
+  text-align: center;
+  padding: 3%;
+  font-size: 0.85em;
+  border: 1px solid blue;
+}
+.dates {
+  display: flex;
+  flex-flow: row wrap;
+  border-top: 1px solid #333;
+  border-right: 1px solid #333;
 }
 </style>

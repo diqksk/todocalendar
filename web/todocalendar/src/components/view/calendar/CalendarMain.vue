@@ -1,7 +1,7 @@
 <template>
   <main>
-    <CalendarHeader />
-    <CalendarList :calendarList="calendarList" />
+    <CalendarHeader :currentDate="currentDate" />
+    <CalendarList :dates="dates" />
   </main>
 </template>
 
@@ -14,16 +14,75 @@ export default {
   components: { CalendarHeader, CalendarList },
   data() {
     return {
-      calendarList: [
-        { code: 11, data: { date: "1", count: 0 } },
-        { code: 12, data: { date: "2", count: 3 } },
-        { code: 13, data: { date: "3", count: 6 } },
-        { code: 14, data: { date: "4", count: 2 } },
-        { code: 15, data: { date: "5", count: 2 } },
-      ],
+      date: null,
+      dates: [],
+      currentDate: { currentYear: null, currentMonth: null },
     };
+  },
+  mounted() {
+    this.renderDate();
+  },
+  methods: {
+    renderDate() {
+      const date = new Date();
+      this.date = date;
+
+      const currentYear = date.getFullYear();
+      const currentMonth = date.getMonth();
+      this.currentDate.currentYear = currentYear;
+      this.currentDate.currentMonth = currentMonth; // 현재 날짜 표시하기
+
+      const prevLast = new Date(currentYear, currentMonth, 0);
+      const curLast = new Date(currentYear, currentMonth + 1, 0);
+
+      const prevLastDate = prevLast.getDate();
+      const prevLastDay = prevLast.getDay();
+
+      const curLastDate = curLast.getDate();
+      const curLastDay = curLast.getDay();
+
+      const prevDates = [];
+      const curDates = [...Array(curLastDate + 1).keys()].slice(1);
+      const nextDates = [];
+
+      if (prevLastDay !== 6) {
+        for (let i = 0; i < prevLastDay + 1; i++)
+          prevDates.unshift(prevLastDate - i);
+      }
+      for (let i = 1; i < 7 - curLastDay; i++) {
+        nextDates.push(i);
+      }
+
+      const dates = [...prevDates, ...curDates, ...nextDates];
+      const curFirstDatesIndex = dates.indexOf(1);
+      const curLastDatesIndex = () => {
+        if (dates.indexOf(curLastDate) > dates.indexOf(prevLastDate)) {
+          return dates.indexOf(curLastDate);
+        } else {
+          return dates.indexOf(curLastDate);
+        }
+      };
+
+      dates.forEach((date, i) => {
+        const condition =
+          i >= curFirstDatesIndex && i < curLastDatesIndex() + 1
+            ? "this"
+            : "other";
+        dates[
+          i
+        ] = `<li class="date"><span class=${condition}>${date}</span></li>`;
+      });
+      this.dates = dates;
+      console.log(curFirstDatesIndex);
+      console.log(curLastDatesIndex());
+    },
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+main {
+  width: 50%;
+  margin: 0 auto;
+}
+</style>
