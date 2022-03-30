@@ -10,7 +10,7 @@
       <li class="day">토</li>
     </ul>
     <ul class="dates">
-      <li v-for="(date, idx) in dates" :key="idx"></li>
+      <li v-for="(date, datesIdx) in dates" :key="datesIdx"></li>
     </ul>
     <ItemModal v-if="this.displayItem" @closeItem="closeItem" />
   </article>
