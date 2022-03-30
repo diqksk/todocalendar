@@ -2,7 +2,7 @@
   <div id="item-box">
     <ul id="todo-container">
       <template v-if="this.todoItems">
-        <li v-for="(item, todoIndex) in this.todoItems" :key="todoIndex">
+        <li v-for="(item, todoIndex) in todoItems" :key="todoIndex">
           <i
             class="material-icons like"
             style="color: salmon"
