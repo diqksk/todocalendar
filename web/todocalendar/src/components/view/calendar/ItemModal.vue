@@ -43,6 +43,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 2;
 }
 .modal {
   width: 30%;
@@ -51,13 +52,10 @@ export default {
   background: #fff;
   border-radius: 0.5rem;
 }
-.btn-box {
-  height: 5%;
-  min-height: 1em;
-}
 .btn {
   display: block;
   width: 15%;
+  padding: 2% 0;
   height: 100%;
   margin: 0 auto;
   border: none;
@@ -72,6 +70,6 @@ export default {
 }
 .btn:hover {
   background: #93f9b9;
-  color: #131313;
+  color: #666;
 }
 </style>
