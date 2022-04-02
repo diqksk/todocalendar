@@ -22,11 +22,9 @@ export default {
   methods: {
     sendItem(input) {
       this.todoItems.unshift(input);
-      console.log(this.todoItems);
     },
     deleteItem(index) {
       this.todoItems.splice(index, 1);
-      console.log(this.todoItems);
     },
   },
 };

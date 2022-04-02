@@ -4,7 +4,7 @@
       {{ currentDate.currentYear }}. {{ currentDate.currentMonth + 1 }}
     </h2>
     <div class="move">
-      <button class="move-btn pre-btn">&lt;</button>
+      <button class="move-btn pre-btn" @click="movePrevMonth">&lt;</button>
       <button class="move-btn cur-btn">Today</button>
       <button class="move-btn next-btn">&gt;</button>
     </div>
@@ -15,7 +15,10 @@
 export default {
   name: "CalendarHeader",
   data() {
-    return {};
+    return {
+      prevMonth: null,
+      nextMonth: null,
+    };
   },
   props: {
     currentDate: {
@@ -26,7 +29,13 @@ export default {
         };
       },
     },
-
+  },
+  methods: {
+    movePrevMonth(e) {
+      e.preventDefault();
+      const prevMonth = new Date().getMonth() - 1;
+      console.log(prevMonth);
+    },
   },
 };
 </script>
