@@ -28,6 +28,12 @@
               itemIdx < currentDatesIdx.lastDatesIdx + 1
                 ? 'this'
                 : 'other',
+              {
+                today:
+                  itemIdx === currentDatesIdx.curDateIdx &&
+                  year === todayYear &&
+                  month === todayMonth,
+              },
             ]"
             >{{ item }}</span
           >
@@ -51,11 +57,18 @@ export default {
       month: null,
       year: null,
       dates: [],
-      currentDatesIdx: { firstDatesIdx: null, lastDatesIdx: null },
+      currentDatesIdx: {
+        firstDatesIdx: null,
+        lastDatesIdx: null,
+        curDateIdx: null,
+      },
       currentDate: { currentYear: null, currentMonth: null },
       curDates: [],
       prevMonth: null,
       nextMonth: null,
+      today: "today",
+      todayYear: null,
+      todayMonth: null,
 
       displayItem: false,
     };
@@ -100,8 +113,6 @@ export default {
       this.renderDate(this.month, this.year);
     },
     renderDate(month, year) {
-      console.log(month);
-      console.log(year);
       const prevLast = new Date(year, month, 0);
       const curLast = new Date(year, month + 1, 0);
 
@@ -136,26 +147,20 @@ export default {
 
       this.dates = dates;
 
-      // this.todayClassAdd();
+      this.todayClassAdd();
     },
-    // todayClassAdd() {
-    //   const today = new Date();
-    //   if (
-    //     this.currentDate.currentYear === today.getFullYear() &&
-    //     this.currentDate.currentMonth === today.getMonth()
-    //   ) {
-    //     const todayDateIdx = today.getDate();
-    //     console.log(todayDateIdx);
-    //     // if (this.dates[todayDateIdx - 1] == todayDateIdx)
-
-    //     // const datesArr = this.$refs.itemlist;
-    //     //   const thisDates = datesArr.filter((date) => {
-    //     //     return date.className === "this";
-    //     //   });
-    //     //   if (thisDates[todayDateIdx - 1].innerText == todayDateIdx)
-    //     //     this.today = "today";
-    //   }
-    // },
+    todayClassAdd() {
+      const today = new Date();
+      const curYear = today.getFullYear();
+      const curMonth = today.getMonth();
+      this.todayYear = curYear;
+      this.todayMonth = curMonth;
+      if (this.year === curYear && this.month === curMonth) {
+        const todayDate = today.getDate();
+        const curDateIdx = this.dates.indexOf(todayDate);
+        this.currentDatesIdx.curDateIdx = curDateIdx;
+      }
+    },
     displayItemModal(e) {
       e.preventDefault();
       this.displayItem = !this.displayItem;
