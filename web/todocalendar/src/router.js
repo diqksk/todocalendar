@@ -13,11 +13,25 @@ const routes = [
     path: "/",
     name: "login",
     component: Login,
+    // meta: { authRequired: true },
   },
   {
     path: "/calendar",
     name: "calendar",
     component: Calendar,
+    // meta: { authRequired: false },
+    // beforeEnter: function (to, from, next) {
+    //   if (
+    //     to.matched.some(function (routeInfo) {
+    //       return routeInfo.meta.authRequired;
+    //     })
+    //   ) {
+    //     return;
+    //   } else {
+    //     console.log(`routing success + ${to.path} `);
+    //     next();
+    //   }
+    // },
   },
 ];
 
