@@ -35,6 +35,7 @@
                   month === todayMonth,
               },
             ]"
+            ref="dateItem"
             >{{ item }}</span
           >
           <div
@@ -44,7 +45,7 @@
               itemIdx < currentDatesIdx.lastDatesIdx + 1
             "
           >
-            <i class="material-icons" style="color: #666">event</i>
+            <i class="material-icons event" style="color: #666">event</i>
             <!-- <span>{{ getCalendarData[item - 1].count }}</span> -->
           </div>
         </li>
@@ -239,16 +240,21 @@ export default {
     async displayItemModal(e) {
       // 선택된 날짜의 Todo list modal 띄우기
       e.preventDefault();
-      const target = e.target;
-      const year = this.year;
+      const year = String(this.year);
       const month = this.month + 1 < 10 ? "0" + (this.month + 1) : this.month;
-      const date =
-        target.innerText.length < 2 ? "0" + target.innerText : target.innerText;
-      const format = year + month + date;
-
-      await this.fetchData("get", `/board/${format}`, this.$route.query.date);
-
-      this.displayItem = !this.displayItem;
+      const targetSpan = e.currentTarget.children[0];
+      if (targetSpan.classList.contains("this")) {
+        const date =
+          targetSpan.innerText.length < 2
+            ? "0" + targetSpan.innerText
+            : targetSpan.innerText;
+        const format = year + month + date;
+        console.log(format);
+        await this.fetchData("get", `/board/${format}`, this.$route.query.id);
+        this.displayItem = !this.displayItem;
+      } else {
+        return;
+      }
     },
     closeItem() {
       this.displayItem = !this.displayItem;
@@ -364,7 +370,7 @@ section {
   align-items: center;
 }
 
-.material-icons {
+.event {
   font-size: 1em;
   padding: 0 0.5em;
 }
