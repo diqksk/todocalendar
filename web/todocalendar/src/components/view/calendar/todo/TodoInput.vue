@@ -58,7 +58,8 @@ export default {
 <style scoped>
 #input-box {
   width: 100%;
-  height: 7%;
+  height: 1.2em;
+  min-height: 1.2em;
   display: flex;
   margin-bottom: 10%;
 }

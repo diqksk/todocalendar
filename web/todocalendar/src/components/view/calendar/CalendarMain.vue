@@ -8,7 +8,7 @@
     </div>
   </header>
 
-  <main>
+  <section>
     <article>
       <ul class="days">
         <li class="day" v-for="(day, dayIdx) in days" :key="dayIdx">
@@ -37,21 +37,41 @@
             ]"
             >{{ item }}</span
           >
+          <div
+            class="count"
+            v-if="
+              itemIdx >= currentDatesIdx.firstDatesIdx &&
+              itemIdx < currentDatesIdx.lastDatesIdx + 1
+            "
+          >
+            <i class="material-icons" style="color: #666">event</i>
+            <!-- <span>{{ getCalendarData[item - 1].count }}</span> -->
+          </div>
         </li>
       </ul>
-      <ItemModal v-if="this.displayItem" @closeItem="closeItem" />
+      <keep-alive>
+        <component
+          :is="todoModal"
+          v-if="this.displayItem"
+          @closeItem="closeItem"
+        ></component>
+      </keep-alive>
     </article>
-  </main>
+  </section>
 </template>
 
 <script>
 import ItemModal from "./ItemModal";
+import userDataMixin from "@/mixins/userDataMixin";
 
 export default {
   name: "CalendarMain",
   components: { ItemModal },
+  mixins: [userDataMixin],
   data() {
     return {
+      todoModal: "ItemModal",
+
       days: ["일", "월", "화", "수", "목", "금", "토"],
       date: null,
       month: null,
@@ -69,6 +89,8 @@ export default {
       today: "today",
       todayYear: null,
       todayMonth: null,
+
+      getCalendarData: null,
 
       displayItem: false,
     };
@@ -148,6 +170,7 @@ export default {
       this.dates = dates;
 
       this.todayClassAdd();
+      this.linkUserData(this.year, this.month);
     },
     todayClassAdd() {
       const today = new Date();
@@ -161,8 +184,70 @@ export default {
         this.currentDatesIdx.curDateIdx = curDateIdx;
       }
     },
-    displayItemModal(e) {
+    async linkUserData(year, month) {
+      // 유저의 calendar 띄우기
+      year = String(year);
+      month = month + 1 < 10 ? "0" + (month + 1) : month + 1;
+      const formatYearMonth = year + month;
+
+      const propsUserData = this.$route.query;
+      propsUserData.date = formatYearMonth;
+
+      const getData = await this.fetchData("get", "/board", this.$route.query);
+      this.getCalendarData = getData.data;
+      console.log(this.getCalendarData);
+
+      // const getData = {
+      //   code: 200,
+      //   data: [
+      //     { date: "20220401", count: 1 },
+      //     { date: "20220402", count: 5 },
+      //     { date: "20220403", count: 1 },
+      //     { date: "20220404", count: 0 },
+      //     { date: "20220405", count: 7 },
+      //     { date: "20220406", count: 4 },
+      //     { date: "20220407", count: 1 },
+      //     { date: "20220408", count: 5 },
+      //     { date: "20220409", count: 1 },
+      //     { date: "20220410", count: 2 },
+      //     { date: "20220411", count: 4 },
+      //     { date: "20220412", count: 7 },
+      //     { date: "20220413", count: 5 },
+      //     { date: "20220414", count: 2 },
+      //     { date: "20220415", count: 3 },
+      //     { date: "20220416", count: 5 },
+      //     { date: "20220417", count: 2 },
+      //     { date: "20220418", count: 1 },
+      //     { date: "20220419", count: 5 },
+      //     { date: "20220420", count: 6 },
+      //     { date: "20220421", count: 7 },
+      //     { date: "20220422", count: 1 },
+      //     { date: "20220423", count: 2 },
+      //     { date: "20220424", count: 3 },
+      //     { date: "20220425", count: 6 },
+      //     { date: "20220426", count: 1 },
+      //     { date: "20220427", count: 2 },
+      //     { date: "20220428", count: 3 },
+      //     { date: "20220429", count: 5 },
+      //     { date: "20220430", count: 11 },
+      //   ],
+      //   err: "error",
+      // };
+      // this.getCalendarData = getData.data;
+      // console.log(this.getCalendarData);
+    },
+    async displayItemModal(e) {
+      // 선택된 날짜의 Todo list modal 띄우기
       e.preventDefault();
+      const target = e.target;
+      const year = this.year;
+      const month = this.month + 1 < 10 ? "0" + (this.month + 1) : this.month;
+      const date =
+        target.innerText.length < 2 ? "0" + target.innerText : target.innerText;
+      const format = year + month + date;
+
+      await this.fetchData("get", `/board/${format}`, this.$route.query.date);
+
       this.displayItem = !this.displayItem;
     },
     closeItem() {
@@ -201,7 +286,7 @@ export default {
   border-left: 1px solid #333;
 }
 
-main {
+section {
   width: 50%;
   margin: 0 auto;
 }
@@ -213,6 +298,7 @@ main {
   width: calc(100% / 7);
   text-align: center;
   padding: 3%;
+  padding-top: 1%;
   font-size: 0.85em;
 }
 .dates {
@@ -224,7 +310,7 @@ main {
 .date {
   width: calc(100% / 7);
   padding: 2%;
-  padding-bottom: 6%;
+  padding-bottom: 0;
   font-size: 0.8em;
   text-align: right;
   border-bottom: 1px solid #333;
@@ -267,5 +353,19 @@ main {
   height: 30px;
   border-radius: 50%;
   background: #00c853;
+}
+
+.count {
+  font-size: 0.8em;
+  color: #333;
+  padding: 20% 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.material-icons {
+  font-size: 1em;
+  padding: 0 0.5em;
 }
 </style>
