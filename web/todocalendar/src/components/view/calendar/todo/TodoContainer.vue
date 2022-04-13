@@ -41,6 +41,7 @@ export default {
   data() {
     return {};
   },
+  mounted() {},
   methods: {
     checkLike(e) {
       const target = e.target;

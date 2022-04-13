@@ -79,6 +79,10 @@ export default {
         : date.getMonth() + 1;
     const formatYearMonth = year + month;
     this.calendarCondition.date = formatYearMonth;
+    // const dateFormat = new Date(+new Date() + 3240 * 10000)
+    //   .toISOString()
+    //   .split("T")[0];
+    // this.calendarCondition.date = dateFormat;
   },
   methods: {
     async checkInfo(e) {
@@ -95,10 +99,8 @@ export default {
           if (userCheck.data) {
             // 회원일 경우
             this.userData = userCheck.data;
-            // console.log(this.userData);
             localStorage.setItem("accessToken", this.userData.accessToken); // 토큰을 브라우저 로컬스토리지에 저장
             this.calendarCondition.id = this.userData.id;
-
             this.$router.replace({
               name: "calendar",
               query: {

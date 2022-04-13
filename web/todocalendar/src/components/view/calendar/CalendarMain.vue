@@ -50,13 +50,13 @@
           </div>
         </li>
       </ul>
-      <keep-alive>
-        <component
-          :is="todoModal"
-          v-if="this.displayItem"
-          @closeItem="closeItem"
-        ></component>
-      </keep-alive>
+      <component
+        :is="todoModal"
+        v-if="this.displayItem"
+        @closeItem="closeItem"
+        :getTodo="getTodo"
+        :clickDateFormat="clickDateFormat"
+      ></component>
     </article>
   </section>
 </template>
@@ -92,6 +92,9 @@ export default {
       todayMonth: null,
 
       getCalendarData: null,
+      clickDateFormat: null,
+
+      getTodo: null,
 
       displayItem: false,
     };
@@ -193,49 +196,8 @@ export default {
 
       const propsUserData = this.$route.query;
       propsUserData.date = formatYearMonth;
-
-      const getData = await this.fetchData("get", "/board", this.$route.query);
+      const getData = await this.fetchData("get", "/board", propsUserData);
       this.getCalendarData = getData.data;
-      console.log(this.getCalendarData);
-
-      // const getData = {
-      //   code: 200,
-      //   data: [
-      //     { date: "20220401", count: 1 },
-      //     { date: "20220402", count: 5 },
-      //     { date: "20220403", count: 1 },
-      //     { date: "20220404", count: 0 },
-      //     { date: "20220405", count: 7 },
-      //     { date: "20220406", count: 4 },
-      //     { date: "20220407", count: 1 },
-      //     { date: "20220408", count: 5 },
-      //     { date: "20220409", count: 1 },
-      //     { date: "20220410", count: 2 },
-      //     { date: "20220411", count: 4 },
-      //     { date: "20220412", count: 7 },
-      //     { date: "20220413", count: 5 },
-      //     { date: "20220414", count: 2 },
-      //     { date: "20220415", count: 3 },
-      //     { date: "20220416", count: 5 },
-      //     { date: "20220417", count: 2 },
-      //     { date: "20220418", count: 1 },
-      //     { date: "20220419", count: 5 },
-      //     { date: "20220420", count: 6 },
-      //     { date: "20220421", count: 7 },
-      //     { date: "20220422", count: 1 },
-      //     { date: "20220423", count: 2 },
-      //     { date: "20220424", count: 3 },
-      //     { date: "20220425", count: 6 },
-      //     { date: "20220426", count: 1 },
-      //     { date: "20220427", count: 2 },
-      //     { date: "20220428", count: 3 },
-      //     { date: "20220429", count: 5 },
-      //     { date: "20220430", count: 11 },
-      //   ],
-      //   err: "error",
-      // };
-      // this.getCalendarData = getData.data;
-      // console.log(this.getCalendarData);
     },
     async displayItemModal(e) {
       // 선택된 날짜의 Todo list modal 띄우기
@@ -249,8 +211,53 @@ export default {
             ? "0" + targetSpan.innerText
             : targetSpan.innerText;
         const format = year + month + date;
-        console.log(format);
-        await this.fetchData("get", `/board/${format}`, this.$route.query.id);
+        this.clickDateFormat = format;
+
+        const getTodo = await this.fetchData(
+          "get",
+          `/board/${format}`,
+          this.$route.query.id
+        );
+        console.log(getTodo);
+
+        const res = {
+          code: 1,
+          data: [
+            {
+              id: 1,
+              title: 1,
+              content: "공부하기",
+              createAt: "20220410 10:00:01",
+            },
+            {
+              id: 1,
+              title: 2,
+              content: "운동하기",
+              createAt: "20220410 15:38:02",
+            },
+            {
+              id: 1,
+              title: 3,
+              content: "씻기",
+              createAt: "20220410 17:02:51",
+            },
+            {
+              id: 1,
+              title: 4,
+              content: "밥먹기",
+              createAt: "20220410 18:21:05",
+            },
+            {
+              id: 1,
+              title: 5,
+              content: "잠자기",
+              createAt: "20220410 23:11:03",
+            },
+          ],
+          err: "error",
+        };
+        this.getTodo = res;
+
         this.displayItem = !this.displayItem;
       } else {
         return;
