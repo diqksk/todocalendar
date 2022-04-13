@@ -18,6 +18,7 @@ export default {
   data() {
     return {
       input: "",
+      // createDate: null,
     };
   },
   mounted() {
@@ -32,6 +33,12 @@ export default {
     },
     addItem(e) {
       e.preventDefault();
+      // const getCreateDate = new Date(+new Date() + 3240 * 10000)
+      //   .toISOString()
+      //   .split("T")[0]
+      //   .replace(/-/g, "");
+      // this.createDate = getCreateDate;
+
       if (this.input.trim() !== "") {
         this.$emit("sendItem", this.input);
         this.input = "";
@@ -58,15 +65,31 @@ export default {
 <style scoped>
 #input-box {
   width: 100%;
+  height: 1.2em;
+  min-height: 1.2em;
   display: flex;
   margin-bottom: 10%;
 }
 #todo-input {
-  width: 90%;
+  width: 80%;
+  margin-right: 5%;
   outline: none;
   padding-left: 0.5em;
 }
 button {
-  width: 10%;
+  width: 15%;
+  background: #1d976c;
+  border: none;
+  border-radius: 0.2rem;
+  color: #fff;
+  font-size: 0.5em;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  -webkit-transition: all 0.4s ease;
+  -moz-transition: all 0.4s ease;
+}
+button:hover {
+  background: #93f9b9;
+  color: #666;
 }
 </style>

@@ -66,8 +66,23 @@ export default {
       displayModal: false,
       displayAlert: false,
       alertText: "",
-      userData: {},
+      userData: null,
+      calendarCondition: { id: null, date: null },
     };
+  },
+  created() {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month =
+      date.getMonth() + 1 < 10
+        ? "0" + (date.getMonth() + 1)
+        : date.getMonth() + 1;
+    const formatYearMonth = year + month;
+    this.calendarCondition.date = formatYearMonth;
+    // const dateFormat = new Date(+new Date() + 3240 * 10000)
+    //   .toISOString()
+    //   .split("T")[0];
+    // this.calendarCondition.date = dateFormat;
   },
   methods: {
     async checkInfo(e) {
@@ -84,8 +99,15 @@ export default {
           if (userCheck.data) {
             // 회원일 경우
             this.userData = userCheck.data;
-            console.log(this.userData);
-            this.$router.replace({ path: "/calendar" });
+            localStorage.setItem("accessToken", this.userData.accessToken); // 토큰을 브라우저 로컬스토리지에 저장
+            this.calendarCondition.id = this.userData.id;
+            this.$router.replace({
+              name: "calendar",
+              query: {
+                id: this.calendarCondition.id,
+                date: this.calendarCondition.date,
+              },
+            });
           } else {
             // 회원이 아닐 경우
             this.displayAlert = !this.displayAlert;
@@ -202,6 +224,6 @@ export default {
 }
 .btn:hover {
   background: #93f9b9;
-  color: #131313;
+  color: #666;
 }
 </style>

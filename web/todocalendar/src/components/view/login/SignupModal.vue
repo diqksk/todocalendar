@@ -248,7 +248,7 @@ export default {
 }
 .btn:hover {
   background: #93f9b9;
-  color: #131313;
+  color: #666;
 }
 #signup-complete-btn {
   padding: 2%;
