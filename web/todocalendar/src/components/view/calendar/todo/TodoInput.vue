@@ -18,6 +18,7 @@ export default {
   data() {
     return {
       input: "",
+      // createDate: null,
     };
   },
   mounted() {
@@ -32,6 +33,12 @@ export default {
     },
     addItem(e) {
       e.preventDefault();
+      // const getCreateDate = new Date(+new Date() + 3240 * 10000)
+      //   .toISOString()
+      //   .split("T")[0]
+      //   .replace(/-/g, "");
+      // this.createDate = getCreateDate;
+
       if (this.input.trim() !== "") {
         this.$emit("sendItem", this.input);
         this.input = "";

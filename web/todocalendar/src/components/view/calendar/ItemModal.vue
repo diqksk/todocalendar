@@ -2,7 +2,7 @@
   <div class="modal-wrapper">
     <div class="modal">
       <TodoHeader />
-      <TodoContent />
+      <TodoContent :getTodo="getTodo" :clickDateFormat="clickDateFormat" />
       <div class="btn-box">
         <button class="btn" id="signup-cancle-btn" @click="closeItem">
           닫기
@@ -22,7 +22,10 @@ export default {
     TodoHeader,
     TodoContent,
   },
-  props: {},
+  props: {
+    getTodo: Object,
+    clickDateFormat: String,
+  },
   methods: {
     closeItem(e) {
       e.preventDefault();
