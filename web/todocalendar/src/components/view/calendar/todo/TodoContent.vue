@@ -25,7 +25,21 @@ export default {
       todoItems: [],
       getTodoArray: null,
       todoContent: null,
+      planNum: null,
       createTodo: { id: 1, title: "", content: "", date: "YYYYMMDD" },
+      createTodoRes: {
+        code: null,
+        data: {
+          planId: null,
+          title: null,
+          content: null,
+          date: null,
+          createAt: null,
+        },
+        err: null,
+      },
+
+      deleteTodo: { id: null, planId: null },
       clickDate: null,
     };
   },
@@ -40,12 +54,30 @@ export default {
       this.createTodo.title = input;
       this.createTodo.content = input;
       this.createTodo.date = this.clickDate;
-
-      const create = await this.fetchData("post", "/board", this.createTodo); // todo 일정 작성하고 데이터 서버에 보내기
-      console.log(create);
+      console.log(this.createTodo);
+      // const create = await this.fetchData("post", "/board", this.createTodo); // todo 작성하고 데이터 서버에 보내기
+      // console.log(create);
+      const create = {
+        code: 1,
+        data: {
+          planId: 1,
+          title: "",
+          content: "",
+          date: "YYYYMMDD",
+          createAt: "YYYYMMDD hh:mm:ss",
+        },
+        err: "error",
+      };
+      this.createTodoRes = create;
+      console.log(this.createTodoRes);
     },
     deleteItem(index) {
+      console.log(index);
       this.todoItems.splice(index, 1);
+      this.deleteTodo.id = this.$route.query.id;
+      this.deleteTodo.planId = this.createTodoRes.planId;
+      // const delete = await this.fetchData("delete", "/board", this.deleteTodo); // todo 삭제
+      // console.log(delete);
     },
     getTodoContent() {
       // 유저의 클릭 날짜 todo 데이터 불러오기
