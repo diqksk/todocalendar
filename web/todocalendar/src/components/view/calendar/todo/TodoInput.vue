@@ -4,7 +4,7 @@
       type="text"
       id="todo-input"
       @input="writeItem"
-      @keypress="addItemKeyPress"
+      @keydown.enter="addItem"
       v-model="input"
       ref="input"
     />
@@ -27,9 +27,7 @@ export default {
   methods: {
     writeItem(e) {
       const input = e.target.value;
-      if (input.trim() !== "") {
-        this.input = input;
-      }
+      if (input.trim() !== "") this.input = input;
     },
     addItem(e) {
       e.preventDefault();
@@ -47,17 +45,6 @@ export default {
       }
       this.$refs.input.focus();
     },
-    addItemKeyPress(e) {
-      if (e.keyCode === 13) {
-        if (this.input.trim() !== "") {
-          this.$emit("sendItem", this.input);
-          this.input = "";
-        } else {
-          this.input = this.input.trim();
-        }
-        this.$refs.input.focus();
-      }
-    },
   },
 };
 </script>
@@ -72,6 +59,7 @@ export default {
 }
 #todo-input {
   width: 80%;
+  letter-spacing: 0.1em;
   margin-right: 5%;
   outline: none;
   padding-left: 0.5em;
