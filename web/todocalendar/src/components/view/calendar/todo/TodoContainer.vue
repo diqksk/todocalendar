@@ -23,6 +23,7 @@
               style="color: #d50000"
               @click="deleteTodo"
               :index="todoIndex"
+              ref="delete"
               >close</i
             >
           </span>
@@ -60,6 +61,8 @@ export default {
     },
     deleteTodo(e) {
       e.preventDefault();
+      console.log(e);
+      console.log(this.$refs.delete);
       const index = e.target.getAttribute("index");
       this.$emit("deleteItem", index);
     },

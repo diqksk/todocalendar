@@ -213,12 +213,11 @@ export default {
         const format = year + month + date;
         this.clickDateFormat = format;
 
-        const getTodo = await this.fetchData(
-          "get",
-          `/board/${format}`,
-          this.$route.query.id
-        );
-        console.log(getTodo);
+        // const getTodo = await this.fetchData(
+        //   "get",
+        //   `/board/${format}`,
+        //   this.$route.query.id
+        // );
 
         const res = {
           code: 1,
