@@ -1,7 +1,11 @@
 <template>
   <div class="todo-box">
     <TodoInput @sendItem="sendItem" />
-    <TodoContainer :todoItems="todoItems" @deleteItem="deleteItem" />
+    <TodoContainer
+      :todoItems="todoItems"
+      @deleteItem="deleteItem"
+      @sendEditTodo="sendEditTodo"
+    />
   </div>
 </template>
 
@@ -41,6 +45,15 @@ export default {
 
       deleteTodo: { id: null, planId: null },
       clickDate: null,
+
+      edit: "",
+      editTodo: {
+        id: null,
+        planId: null,
+        title: null,
+        content: null,
+        date: null,
+      },
     };
   },
   mounted() {
@@ -71,7 +84,7 @@ export default {
       this.createTodoRes = create;
       console.log(this.createTodoRes);
     },
-    deleteItem(index) {
+    async deleteItem(index) {
       console.log(index);
       this.todoItems.splice(index, 1);
       this.deleteTodo.id = this.$route.query.id;
@@ -88,6 +101,17 @@ export default {
       });
       filterItem;
       this.todoItems = arr;
+    },
+    async sendEditTodo(edit, index) {
+      this.edit = edit;
+      this.todoItems[index] = edit;
+      this.editTodo.id = this.$route.query.id;
+      this.editTodo.planId = this.createTodoRes.planId;
+      this.editTodo.title = this.createTodo.title;
+      this.editTodo.content = this.createTodo.content;
+      this.editTodo.date = this.createTodo.date;
+      // const edit = await this.fetchData("post", "/board", this.editTodo); // todo 편집
+      // console.log(edit);
     },
   },
 };
