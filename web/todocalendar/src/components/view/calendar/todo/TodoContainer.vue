@@ -1,44 +1,65 @@
 <template>
   <div id="item-box">
     <ul id="todo-container">
-      <template v-if="this.todoItems">
+      <template v-if="todoItems">
         <li v-for="(item, todoIndex) in todoItems" :key="todoIndex">
-          <div class="todo">
+          <div class="todo" ref="todoItem">
             <i
               class="material-icons like"
               style="color: salmon"
               @click="checkLike"
-              >favorite_border</i
+              :index="todoIndex"
+              >{{
+                todoItems[todoIndex].like ? "favorite" : "favorite_border"
+              }}</i
             >
-            <span class="todo-item">{{ item }}</span>
+            <span
+              class="todo-item"
+              :class="{ 'done-text-line': todoItems[todoIndex].done }"
+              >{{ item.content }}</span
+            >
             <span class="icon-right">
               <i
                 class="material-icons done"
+                :class="{ 'done-hide': todoItems[todoIndex].done }"
                 style="color: #00c853"
                 @click="doneTodo"
+                :index="todoIndex"
                 >done</i
               >
-              <span class="slash"> / </span>
+              <span
+                class="slash"
+                :class="{ 'done-hide': todoItems[todoIndex].done }"
+              >
+                /
+              </span>
               <i
                 class="material-icons edit"
+                :class="{ 'done-hide': todoItems[todoIndex].done }"
                 style="color: #757575"
                 :index="todoIndex"
                 @click="editActive"
-                ref="edit"
                 >edit</i
               >
-              <span class="slash"> / </span>
+              <span
+                class="slash"
+                :class="{ 'done-hide': todoItems[todoIndex].done }"
+              >
+                /
+              </span>
               <i
                 class="material-icons close"
                 style="color: #d50000"
                 @click="deleteTodo"
                 :index="todoIndex"
-                ref="delete"
                 >close</i
               >
             </span>
           </div>
-          <div class="edit-todo" style="display: none">
+          <div
+            class="edit-todo"
+            :class="todoItems[todoIndex].edit ? 'edit-show' : 'edit-hide'"
+          >
             <input
               type="text"
               class="edit-input"
@@ -60,9 +81,7 @@
 <script>
 export default {
   name: "TodoContainer",
-  props: {
-    todoItems: Array,
-  },
+  props: { todoItems: Array },
   data() {
     return {
       edit: "",
@@ -71,26 +90,14 @@ export default {
   mounted() {},
   methods: {
     checkLike(e) {
-      const target = e.target;
-      const text =
-        target.innerText === "favorite_border" ? "favorite" : "favorite_border";
-      target.innerText = text;
+      e.preventDefault();
+      const index = e.target.getAttribute("index");
+      this.$emit("sendLike", index);
     },
     doneTodo(e) {
       e.preventDefault();
-      const rightIcon = e.path[1];
-      const todoPath = e.path[2];
-      rightIcon.childNodes[0].style.display = "none";
-      rightIcon.childNodes[1].style.display = "none";
-      rightIcon.childNodes[2].style.display = "none";
-      rightIcon.childNodes[3].style.display = "none";
-      todoPath.childNodes[1].style.textDecoration = "line-through";
-      todoPath.childNodes[1].style.color = "lightGray";
-    },
-    deleteTodo(e) {
-      e.preventDefault();
       const index = e.target.getAttribute("index");
-      this.$emit("deleteItem", index);
+      this.$emit("sendStatusDone", index);
     },
     editTodo(e) {
       const input = e.target.value;
@@ -98,30 +105,24 @@ export default {
     },
     editAdd(e) {
       e.preventDefault();
-      const $editTodo = e.path[2].childNodes[1];
       const index = e.target.getAttribute("index");
       if (this.edit.trim() !== "") {
-        this.$emit("sendEditTodo", this.edit, index);
+        this.$emit("addEditTodo", this.edit, index);
         this.edit = "";
-        if ($editTodo.style.display === "none") {
-          $editTodo.style.display = "block";
-        } else {
-          $editTodo.style.display = "none";
-        }
       } else {
+        this.$emit("closeEditTodo", index);
         this.edit = this.edit.trim();
       }
     },
     editActive(e) {
       e.preventDefault();
-      const $editTodo = e.path[3].childNodes[1];
-      if ($editTodo.style.display === "none") {
-        $editTodo.style.display = "block";
-        $editTodo.childNodes[0].focus();
-      } else {
-        $editTodo.style.display = "none";
-        this.edit = "";
-      }
+      const index = e.target.getAttribute("index");
+      this.$emit("sendEditTodo", index);
+    },
+    deleteTodo(e) {
+      e.preventDefault();
+      const index = e.target.getAttribute("index");
+      this.$emit("deleteItem", index);
     },
   },
 };
@@ -144,12 +145,14 @@ export default {
 .edit-todo {
   margin-bottom: 5%;
   padding-bottom: 3%;
-  /* display: none; */
+  display: none;
 }
 .edit-input {
   font-size: 0.6em;
   width: 70%;
   letter-spacing: 0.1em;
+  text-indent: 0.1em;
+  text-align: center;
   margin-right: 5%;
   padding: 0 1em 3%;
   border: none;
@@ -185,5 +188,20 @@ export default {
 .icon-right {
   min-width: 5em;
   margin-right: 5%;
+}
+
+.done-text-line {
+  text-decoration: line-through;
+  color: lightGray;
+}
+.done-hide {
+  display: none;
+}
+
+.edit-hide {
+  display: none;
+}
+.edit-show {
+  display: block;
 }
 </style>
