@@ -52,8 +52,12 @@ export default {
   width: 30%;
   padding: 2%;
   height: 80%;
+  min-height: 15em;
   background: #fff;
   border-radius: 0.5rem;
+}
+.btn-box {
+  margin: 2% auto;
 }
 .btn {
   display: block;

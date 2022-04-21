@@ -2,9 +2,13 @@
   <div class="todo-box">
     <TodoInput @sendItem="sendItem" />
     <TodoContainer
-      :todoItems="todoItems"
+      @sendLike="sendLike"
       @deleteItem="deleteItem"
+      @addEditTodo="addEditTodo"
       @sendEditTodo="sendEditTodo"
+      @sendStatusDone="sendStatusDone"
+      @closeEditTodo="closeEditTodo"
+      :todoItems="todoItems"
     />
   </div>
 </template>
@@ -26,7 +30,6 @@ export default {
   },
   data() {
     return {
-      todoItems: [],
       getTodoArray: null,
       todoContent: null,
       planNum: null,
@@ -39,9 +42,14 @@ export default {
           content: null,
           date: null,
           createAt: null,
+          like: false,
+          done: false,
+          edit: false,
         },
         err: null,
       },
+      getItems: [],
+      todoItems: [],
 
       deleteTodo: { id: null, planId: null },
       clickDate: null,
@@ -53,6 +61,9 @@ export default {
         title: null,
         content: null,
         date: null,
+        like: false,
+        done: false,
+        edit: false,
       },
     };
   },
@@ -61,13 +72,41 @@ export default {
     this.getTodoContent();
   },
   methods: {
-    async sendItem(input) {
-      this.todoItems.unshift(input);
+    getTodoContent() {
+      // 유저의 클릭 날짜 todo 데이터 불러오기
+      this.getTodoArray = this.getTodo.data;
+      const arr = [];
+      this.getTodoArray.forEach((item) => {
+        arr.unshift(item);
+      });
+      this.getItems = arr;
+
+      const prevItems = [...this.getItems];
+      prevItems.forEach((item) => {
+        const { content, like, done, edit } = item;
+        const format = {
+          content: content,
+          like: like,
+          done: done,
+          edit: edit,
+        };
+        this.todoItems.unshift(format);
+      });
+    },
+    async sendItem(resInput) {
+      const itemFormat = {
+        content: resInput,
+        like: false,
+        done: false,
+        edit: false,
+      };
+
+      this.todoItems.unshift(itemFormat);
+
       this.createTodo.id = this.$route.query.id;
-      this.createTodo.title = input;
-      this.createTodo.content = input;
+      this.createTodo.title = resInput;
+      this.createTodo.content = resInput;
       this.createTodo.date = this.clickDate;
-      console.log(this.createTodo);
       // const create = await this.fetchData("post", "/board", this.createTodo); // todo 작성하고 데이터 서버에 보내기
       // console.log(create);
       const create = {
@@ -78,40 +117,46 @@ export default {
           content: "",
           date: "YYYYMMDD",
           createAt: "YYYYMMDD hh:mm:ss",
+          like: false,
+          done: false,
+          edit: false,
         },
         err: "error",
       };
       this.createTodoRes = create;
-      console.log(this.createTodoRes);
     },
-    async deleteItem(index) {
-      console.log(index);
-      this.todoItems.splice(index, 1);
-      this.deleteTodo.id = this.$route.query.id;
-      this.deleteTodo.planId = this.createTodoRes.planId;
-      // const delete = await this.fetchData("delete", "/board", this.deleteTodo); // todo 삭제
-      // console.log(delete);
+    sendLike(index) {
+      this.todoItems[index].like = !this.todoItems[index].like;
     },
-    getTodoContent() {
-      // 유저의 클릭 날짜 todo 데이터 불러오기
-      this.getTodoArray = this.getTodo.data;
-      const arr = [];
-      const filterItem = this.getTodoArray.forEach((item) => {
-        arr.unshift(item.content);
-      });
-      filterItem;
-      this.todoItems = arr;
+    sendStatusDone(index) {
+      this.todoItems[index].done = !this.todoItems[index].done;
     },
-    async sendEditTodo(edit, index) {
+    sendEditTodo(index) {
+      this.todoItems[index].edit = !this.todoItems[index].edit;
+    },
+    async addEditTodo(edit, index) {
       this.edit = edit;
-      this.todoItems[index] = edit;
+      this.todoItems[index].content = edit;
       this.editTodo.id = this.$route.query.id;
       this.editTodo.planId = this.createTodoRes.planId;
       this.editTodo.title = this.createTodo.title;
       this.editTodo.content = this.createTodo.content;
       this.editTodo.date = this.createTodo.date;
+      this.todoItems[index].like = false;
+      this.todoItems[index].done = false;
+      this.todoItems[index].edit = false;
       // const edit = await this.fetchData("post", "/board", this.editTodo); // todo 편집
       // console.log(edit);
+    },
+    closeEditTodo(index) {
+      this.todoItems[index].edit = false;
+    },
+    async deleteItem(index) {
+      this.todoItems.splice(index, 1);
+      this.deleteTodo.id = this.$route.query.id;
+      this.deleteTodo.planId = this.createTodoRes.planId;
+      // const delete = await this.fetchData("delete", "/board", this.deleteTodo); // todo 삭제
+      // console.log(delete);
     },
   },
 };
